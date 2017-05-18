@@ -33,13 +33,17 @@ from pymongo_smart_auth import MongoConnection
 mongo1 = MongoConnection(user='user', password='p4ssw0rd')
 database1 = mongo1['database1'] # Automatically authenticated
 
+# Explicit user and password with separate authentication database
+mongo2 = MongoConnection(user='user', password='p4ssw0rd', authentication_database='mongo_users')
+database2 = mongo2['database2'] # Automatically authenticated
+
 # Will read /etc/.mongo_credentials
 mongo2 = MongoConnection(credentials_file='/etc/.mongo_credentials')
-database2 = mongo2['database2'] # Automatically authenticated
+database3 = mongo2['database3'] # Automatically authenticated
 
 # Will read ~/.mongo_credentials
 mongo3 = MongoConnection()
-database3 = mongo3['database3'] # Automatically authenticated
+database4 = mongo3['database4'] # Automatically authenticated
 ```
 
 ## License

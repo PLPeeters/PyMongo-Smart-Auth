@@ -34,6 +34,7 @@ class MongoConnection(MongoClient):
             connect=True,
             user=None,
             password=None,
+            authentication_database=None,
             credentials_file=None,
             **kwargs):
         """Singleton MongoDB connection with built-in authentication."""
@@ -53,9 +54,10 @@ class MongoConnection(MongoClient):
                         # Read the file
                         lines = credentials_file_obj.readlines()
 
-                        # Get the user and password from the contents
-                        user = lines[0].strip()
-                        password = lines[1].strip()
+                        # Get the authentication database, user and password from the contents
+                        authentication_database = lines[0].strip()
+                        user = lines[1].strip()
+                        password = lines[2].strip()
                     except IndexError:
                         raise ConfigurationError("User credentials file '%s' is wrongly formatted." % credentials_file)
             except IOError:
@@ -65,6 +67,7 @@ class MongoConnection(MongoClient):
 
         self.user = user
         self.password = password
+        self.authentication_database = authentication_database
 
     def __getitem__(self, name):
         """Get an authenticated database by name.
@@ -80,7 +83,7 @@ class MongoConnection(MongoClient):
         db = super(MongoConnection, self).__getitem__(name)
 
         # Authenticate before returning it
-        db.authenticate(self.user, self.password)
+        db.authenticate(self.user, self.password, self.authentication_database)
 
         return db
 
