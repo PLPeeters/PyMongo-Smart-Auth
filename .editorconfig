@@ -1,0 +1,17 @@
+# EditorConfig helps developers define and maintain consistent
+# coding styles between different editors and IDEs
+# editorconfig.org
+
+# For Vim support:
+# sudo -- sh -c 'apt-get install editorconfig; cd /etc/vim; git clone https://github.com/editorconfig/editorconfig-vim.git && mkdir -p autoload doc plugin && cp -R editorconfig-vim/autoload/* autoload/ && cp -R editorconfig-vim/doc/* doc/ && cp -R editorconfig-vim/plugin/* plugin/ && rm -rf editorconfig-vim'
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
