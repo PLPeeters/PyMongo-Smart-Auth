@@ -1,4 +1,7 @@
+import logging
 import os
+import stat
+import sys
 
 from pymongo import MongoClient
 from pymongo.errors import ConfigurationError
@@ -6,6 +9,19 @@ from pymongo.errors import ConfigurationError
 
 class MongoConnection(MongoClient):
     USER_CREDENTIALS = '%s/.mongo_credentials' % os.path.expanduser('~')
+
+    # On Unix systems, check the permissions of the credentials file
+    if sys.platform in ('linux', 'linux2', 'darwin') and os.path.exists(USER_CREDENTIALS):
+        # Get the file stats
+        cred_file_stats = os.stat(USER_CREDENTIALS)
+
+        # Issue a warning if the file is group readable
+        if bool(cred_file_stats.st_mode & stat.S_IRGRP):
+            logging.warn("{0} is readable by the group. It should only be readable by the user. Fix by running:\nchmod 600 \"{0}\"".format(USER_CREDENTIALS))
+
+        # Issue a warning if the file is readable by others
+        if bool(cred_file_stats.st_mode & stat.S_IROTH):
+            logging.warn("{0} is readable by others. It should only be readable by the user. Fix by running:\nchmod 600 \"{0}\"".format(USER_CREDENTIALS))
 
     def __new__(cls, *args, **kwargs):
         """Create or return the singleton for the provided arguments."""
