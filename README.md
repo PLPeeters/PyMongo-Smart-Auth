@@ -1,5 +1,7 @@
 # PyMongo-Smart-Auth
 
+[![PyPI version](https://badge.fury.io/py/pymongo_smart_auth.svg)](https://badge.fury.io/py/pymongo_smart_auth)
+
 ## About
 
 This package extends [PyMongo](https://github.com/mongodb/mongo-python-driver) to provide built-in smart authentication.
