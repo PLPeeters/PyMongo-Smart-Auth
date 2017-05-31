@@ -11,4 +11,5 @@ setup(name='pymongo_smart_auth',
       install_requires=[
           'pymongo'
       ],
+      keywords=['mongo', 'pymongo', 'authentication', 'seamless'],
       zip_safe=True)
