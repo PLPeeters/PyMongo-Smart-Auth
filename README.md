@@ -19,8 +19,9 @@ Three optional parameters have been added to the constructor:
 * `user`: the user to authenticate with
 * `password`: the password to authenticate with
 * `credentials_file`: a file where credentials can be found
+* `authenticate`: a boolean indicating whether the client should authenticate (defaults to `True`)
 
-The `credentials` file should have the user on the first line and the password on the second. Upon initialisation, the client looks for credentials in the following order:
+The credentials file should have the user on the authentication database on the first line, the user on the second and the password on the third. Upon initialisation, the client looks for credentials in the following order:
 
 1. The `user` and `password` parameters
 2. The passed `credentials_file`
@@ -40,12 +41,16 @@ mongo2 = MongoConnection(user='user', password='p4ssw0rd', authentication_databa
 database2 = mongo2['database2'] # Automatically authenticated
 
 # Will read /etc/.mongo_credentials
-mongo2 = MongoConnection(credentials_file='/etc/.mongo_credentials')
-database3 = mongo2['database3'] # Automatically authenticated
+mongo3 = MongoConnection(credentials_file='/etc/.mongo_credentials')
+database3 = mongo3['database3'] # Automatically authenticated
 
 # Will read ~/.mongo_credentials
-mongo3 = MongoConnection()
-database4 = mongo3['database4'] # Automatically authenticated
+mongo4 = MongoConnection()
+database4 = mongo4['database4'] # Automatically authenticated
+
+# Will not authenticate
+mongo5 = MongoConnection(authenticate=False)
+database5 = mongo5['database5'] # Not authenticated
 ```
 
 ## License

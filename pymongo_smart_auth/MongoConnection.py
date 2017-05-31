@@ -52,38 +52,43 @@ class MongoConnection(MongoClient):
             password=None,
             authentication_database=None,
             credentials_file=None,
+            authenticate=True,
             **kwargs):
         """Singleton MongoDB connection with built-in authentication."""
 
         super(MongoConnection, self).__init__(host, port, document_class, tz_aware, connect, **kwargs)
 
-        # If no user was passed, try to get the credentials from the filesystem
-        if user is None:
-            # If no credentials file was passed, use the one in the user's home folder
-            if credentials_file is None:
-                credentials_file = MongoConnection.USER_CREDENTIALS
+        self.authenticate = authenticate
 
-            try:
-                # Try to open the credentials file
-                with open(credentials_file) as credentials_file_obj:
-                    try:
-                        # Read the file
-                        lines = credentials_file_obj.readlines()
+        # If authentication is on for this connection
+        if authenticate:
+            # If no user was passed, try to get the credentials from the filesystem
+            if user is None:
+                # If no credentials file was passed, use the one in the user's home folder
+                if credentials_file is None:
+                    credentials_file = MongoConnection.USER_CREDENTIALS
 
-                        # Get the authentication database, user and password from the contents
-                        authentication_database = lines[0].strip()
-                        user = lines[1].strip()
-                        password = lines[2].strip()
-                    except IndexError:
-                        raise ConfigurationError("User credentials file '%s' is wrongly formatted." % credentials_file)
-            except IOError:
-                raise ConfigurationError("Could not open '%s'." % credentials_file)
-        elif password is None:
-            raise ConfigurationError("A password is required.")
+                try:
+                    # Try to open the credentials file
+                    with open(credentials_file) as credentials_file_obj:
+                        try:
+                            # Read the file
+                            lines = credentials_file_obj.readlines()
 
-        self.user = user
-        self.password = password
-        self.authentication_database = authentication_database
+                            # Get the authentication database, user and password from the contents
+                            authentication_database = lines[0].strip()
+                            user = lines[1].strip()
+                            password = lines[2].strip()
+                        except IndexError:
+                            raise ConfigurationError("User credentials file '%s' is wrongly formatted." % credentials_file)
+                except IOError:
+                    raise ConfigurationError("Could not open '%s'." % credentials_file)
+            elif password is None:
+                raise ConfigurationError("A password is required.")
+
+            self.user = user
+            self.password = password
+            self.authentication_database = authentication_database
 
     def __getitem__(self, name):
         """Get an authenticated database by name.
@@ -98,7 +103,8 @@ class MongoConnection(MongoClient):
         # Get the database object
         db = super(MongoConnection, self).__getitem__(name)
 
-        # Authenticate before returning it
-        db.authenticate(self.user, self.password, self.authentication_database)
+        # If authentication is turned on, authenticate before returning the database
+        if self.authenticate:
+            db.authenticate(self.user, self.password, self.authentication_database)
 
         return db
