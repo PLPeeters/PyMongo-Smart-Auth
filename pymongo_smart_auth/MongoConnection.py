@@ -102,15 +102,3 @@ class MongoConnection(MongoClient):
         db.authenticate(self.user, self.password, self.authentication_database)
 
         return db
-
-    def __getattr__(self, name):
-        """Get an authenticated database by name.
-
-        Raises :class:`~pymongo.errors.InvalidName` if an invalid
-        database name is used.
-
-        :Parameters:
-          - `name`: the name of the database to get
-        """
-
-        return self.__getitem__(name)
