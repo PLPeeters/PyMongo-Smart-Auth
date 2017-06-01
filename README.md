@@ -21,7 +21,13 @@ Three optional parameters have been added to the constructor:
 * `credentials_file`: a file where credentials can be found
 * `authenticate`: a boolean indicating whether the client should authenticate (defaults to `True`)
 
-The credentials file should have the user on the authentication database on the first line, the user on the second and the password on the third. Upon initialisation, the client looks for credentials in the following order:
+When using a credentials file, it should have the authentication database on the first line, the user on the second and the password on the third. Example:
+
+    admin
+    administrator
+    P4ssw0rd
+
+Upon initialisation, the client looks for credentials in the following order:
 
 1. The `user` and `password` parameters
 2. The passed `credentials_file`
