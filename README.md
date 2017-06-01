@@ -4,7 +4,12 @@
 
 ## About
 
-This package extends [PyMongo](https://github.com/mongodb/mongo-python-driver) to provide built-in smart authentication.
+This package extends [PyMongo](https://github.com/mongodb/mongo-python-driver)'s `MongoClient` to provide built-in smart authentication. It simplifies authentication by:
+
+* automatically authenticating when accessing a database instead of having to call `authenticate` on each database object
+* looking for a `.mongo_credentials` file in the user's home if an authenticated client was created without passing any credentials
+
+It also allows the user to specify the path of another credentials file or pass credentials directly.
 
 ## Installation
 
