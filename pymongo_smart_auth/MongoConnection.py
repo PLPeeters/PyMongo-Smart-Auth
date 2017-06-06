@@ -7,6 +7,9 @@ from pymongo import MongoClient
 from pymongo.errors import ConfigurationError
 
 
+KWD_MARK = object() # Sentinel to separate args from kwargs in __new__
+
+
 class MongoConnection(MongoClient):
     USER_CREDENTIALS = '%s/.mongo_credentials' % os.path.expanduser('~')
 
@@ -27,21 +30,25 @@ class MongoConnection(MongoClient):
         """Create or return the singleton for the provided arguments."""
 
         # Create a unique key for the instance
-        kwd_mark = object()  # Sentinel to separate args from kwargs
-        key = args + (kwd_mark,) + tuple(sorted(kwargs.items()))
+        key = args + (KWD_MARK,) + tuple(sorted(kwargs.items()))
         self = str(key)
 
         # If the class doesn't have an instance for the current set of parameters yet, create it now
         if not hasattr(cls, self):
             instance = object.__new__(cls)
-            instance.__init__(*args, **kwargs)
+            instance.__init(*args, **kwargs)
 
             setattr(cls, self, instance)
 
         # Return the instance
         return getattr(cls, self)
 
-    def __init__(
+    def __init__(self, *args, **kwargs):
+        """Blank __init__ method since initialisation is handled by __new__ and __init."""
+
+        pass
+
+    def __init(
             self,
             host=None,
             port=None,
