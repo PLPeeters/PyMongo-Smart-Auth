@@ -1,6 +1,10 @@
 Changelog
 =========
 
+**0.3.0**
+
+* Added support for server credentials in /etc/mongo_credentials
+
 **0.2.1**
 
 * Fixed singleton not working properly due to overridden `__init__` method

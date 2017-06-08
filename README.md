@@ -37,6 +37,7 @@ Upon initialisation, the client looks for credentials in the following order:
 1. The `user` and `password` parameters
 2. The passed `credentials_file`
 3. The `.mongo_credentials` file in the user's home
+4. The `mongo_credentials` file in the `/etc` folder
 
 Usage examples:
 
@@ -51,11 +52,11 @@ database1 = mongo1['database1'] # Automatically authenticated
 mongo2 = MongoConnection(user='user', password='p4ssw0rd', authentication_database='mongo_users')
 database2 = mongo2['database2'] # Automatically authenticated
 
-# Will read /etc/.mongo_credentials
-mongo3 = MongoConnection(credentials_file='/etc/.mongo_credentials')
+# Will read /some/path/mongo_credentials
+mongo3 = MongoConnection(credentials_file='/some/path/mongo_credentials')
 database3 = mongo3['database3'] # Automatically authenticated
 
-# Will read ~/.mongo_credentials
+# Will read ~/.mongo_credentials if it exists, otherwise /etc/mongo_credentials
 mongo4 = MongoConnection()
 database4 = mongo4['database4'] # Automatically authenticated
 

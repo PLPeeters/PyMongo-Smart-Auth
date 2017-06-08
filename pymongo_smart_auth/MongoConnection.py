@@ -12,6 +12,7 @@ KWD_MARK = object() # Sentinel to separate args from kwargs in __new__
 
 class MongoConnection(MongoClient):
     USER_CREDENTIALS = '%s/.mongo_credentials' % os.path.expanduser('~')
+    SERVER_CREDENTIALS = '/etc/mongo_credentials'
 
     # On Unix systems, check the permissions of the credentials file
     if sys.platform in ('linux', 'linux2', 'darwin') and os.path.exists(USER_CREDENTIALS):
@@ -71,9 +72,16 @@ class MongoConnection(MongoClient):
         if authenticate:
             # If no user was passed, try to get the credentials from the filesystem
             if user is None:
-                # If no credentials file was passed, use the one in the user's home folder
+                # If no credentials file was passed
                 if credentials_file is None:
-                    credentials_file = MongoConnection.USER_CREDENTIALS
+                    # Use the first existing credentials file between the one in the
+                    # user's home and the one in /etc
+                    if os.path.exists(MongoConnection.USER_CREDENTIALS):
+                        credentials_file = MongoConnection.USER_CREDENTIALS
+                    elif os.path.exists(MongoConnection.SERVER_CREDENTIALS):
+                        credentials_file = MongoConnection.SERVER_CREDENTIALS
+                    else:
+                        raise ConfigurationError("No configuration file found at either '%s' or '%s'." % (MongoConnection.USER_CREDENTIALS, MongoConnection.SERVER_CREDENTIALS))
 
                 try:
                     # Try to open the credentials file
@@ -87,7 +95,7 @@ class MongoConnection(MongoClient):
                             user = lines[1].strip()
                             password = lines[2].strip()
                         except IndexError:
-                            raise ConfigurationError("User credentials file '%s' is wrongly formatted." % credentials_file)
+                            raise ConfigurationError("Credentials file '%s' is wrongly formatted." % credentials_file)
                 except IOError:
                     raise ConfigurationError("Could not open '%s'." % credentials_file)
             elif password is None:
