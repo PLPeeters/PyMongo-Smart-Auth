@@ -7,9 +7,11 @@
 This package extends [PyMongo](https://github.com/mongodb/mongo-python-driver)'s `MongoClient` to provide built-in smart authentication. It simplifies authentication by:
 
 * automatically authenticating when accessing a database instead of having to call `authenticate` on each database object
-* looking for a `.mongo_credentials` file in the user's home if an authenticated client was created without passing any credentials
+* if an authenticated client was created without passing any credentials:
+    1. looking for a `.mongo_credentials` file in the user's home
+    2. looking for a `mongo_credentials` file in the `/etc` folder
 
-It also allows the user to specify the path of another credentials file or pass credentials directly.
+It also allows the user to specify the path to another credentials file or pass credentials directly.
 
 ## Installation
 
@@ -17,9 +19,9 @@ It also allows the user to specify the path of another credentials file or pass 
 
 ## Usage
 
-The `MongoConnection` class is a drop-in replacement for the PyMongo `MongoClient` that simplifies authentication management and uses the singleton pattern. This means every unique set of parameters will only create one connection to MongoDB.
+The `MongoConnection` class is a drop-in replacement for PyMongo's `MongoClient` that simplifies authentication management and uses the singleton pattern. This means every unique set of parameters will only create one connection to MongoDB.
 
-Three optional parameters have been added to the constructor:
+The constructor works in the same way as the `MongoClient` constructor, with four additional, optional parameters:
 
 * `user`: the user to authenticate with
 * `password`: the password to authenticate with
