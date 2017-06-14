@@ -19,7 +19,7 @@ It also allows the user to specify the path to another credentials file or pass 
 
 ## Usage
 
-The `MongoConnection` class is a drop-in replacement for PyMongo's `MongoClient` that simplifies authentication management and uses the singleton pattern. This means every unique set of parameters will only create one connection to MongoDB.
+The `MongoConnection` class is a drop-in replacement for PyMongo's `MongoClient` that simplifies authentication management.
 
 The constructor works in the same way as the `MongoClient` constructor, with four additional, optional parameters:
 
