@@ -1,6 +1,10 @@
 Changelog
 =========
 
+**0.4.0**
+
+* Made the MongoClient a regular class instead of a singleton, because the singleton pattern broke things such as forking
+
 **0.3.0**
 
 * Added support for server credentials in /etc/mongo_credentials
