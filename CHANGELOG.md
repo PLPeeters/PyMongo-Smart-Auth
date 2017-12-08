@@ -1,6 +1,10 @@
 Changelog
 =========
 
+**0.5.0**
+
+* Moved authentication to the initialisation instead of authenticating only when fetching a database
+
 **0.4.0**
 
 * Made the MongoClient a regular class instead of a singleton, because the singleton pattern broke things such as forking

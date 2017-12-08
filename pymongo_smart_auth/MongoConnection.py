@@ -76,25 +76,5 @@ class MongoConnection(MongoClient):
             elif password is None:
                 raise ConfigurationError("A password is required.")
 
-            self.user = user
-            self.password = password
-            self.authentication_database = authentication_database
-
-    def __getitem__(self, name):
-        """Get an authenticated database by name.
-
-        Raises :class:`~pymongo.errors.InvalidName` if an invalid
-        database name is used.
-
-        :Parameters:
-          - `name`: the name of the database to get
-        """
-
-        # Get the database object
-        db = super(MongoConnection, self).__getitem__(name)
-
-        # If authentication is turned on, authenticate before returning the database
-        if self.authenticate:
-            db.authenticate(self.user, self.password, self.authentication_database)
-
-        return db
+            # Authenticate the user
+            self[authentication_database].authenticate(user, password)
