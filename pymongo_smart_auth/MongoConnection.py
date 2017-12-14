@@ -76,5 +76,10 @@ class MongoConnection(MongoClient):
             elif password is None:
                 raise ConfigurationError("A password is required.")
 
+            # Store the user, password and authentication database in the instance
+            self.user = user
+            self.password = password
+            self.authentication_database = authentication_database
+
             # Authenticate the user
             self[authentication_database].authenticate(user, password)
