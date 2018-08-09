@@ -8,8 +8,9 @@ This package extends [PyMongo](https://github.com/mongodb/mongo-python-driver)'s
 
 * automatically authenticating when accessing a database instead of having to call `authenticate` on each database object
 * if an authenticated client was created without passing any credentials:
-    1. looking for a `.mongo_credentials` file in the user's home
-    2. looking for a `mongo_credentials` file in the `/etc` folder
+    1. looking for credentials in the `MONGO_AUTHENTICATION_DATABASE`, `MONGO_USERNAME` and `MONGO_PASSWORD` environment variables
+    2. looking for a `.mongo_credentials` file in the user's home
+    3. looking for a `mongo_credentials` file in the `/etc` folder
 
 It also allows the user to specify the path to another credentials file or pass credentials directly.
 
@@ -38,8 +39,9 @@ Upon initialisation, the client looks for credentials in the following order:
 
 1. The `user` and `password` parameters
 2. The passed `credentials_file`
-3. The `.mongo_credentials` file in the user's home
-4. The `mongo_credentials` file in the `/etc` folder
+3. The `MONGO_AUTHENTICATION_DATABASE`, `MONGO_USERNAME` and `MONGO_PASSWORD` environment variables
+4. The `.mongo_credentials` file in the user's home
+5. The `mongo_credentials` file in the `/etc` folder
 
 Usage examples:
 
@@ -58,7 +60,7 @@ database2 = mongo2['database2'] # Automatically authenticated
 mongo3 = MongoConnection(credentials_file='/some/path/mongo_credentials')
 database3 = mongo3['database3'] # Automatically authenticated
 
-# Will read ~/.mongo_credentials if it exists, otherwise /etc/mongo_credentials
+# Will read the environment variables if they exist, otherwise ~/.mongo_credentials if it exists, otherwise /etc/mongo_credentials
 mongo4 = MongoConnection()
 database4 = mongo4['database4'] # Automatically authenticated
 

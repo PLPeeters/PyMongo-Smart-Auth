@@ -1,6 +1,14 @@
 Changelog
 =========
 
+**0.6.0**
+
+* Added the ability to fetch credentials from environment variables
+
+**0.5.1**
+
+* Moved the username, password and authentication database to instance variables
+
 **0.5.0**
 
 * Moved authentication to the initialisation instead of authenticating only when fetching a database

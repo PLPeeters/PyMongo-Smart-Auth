@@ -45,36 +45,51 @@ class MongoConnection(MongoClient):
 
         # If authentication is on for this connection
         if authenticate:
-            # If no user was passed, try to get the credentials from the filesystem
+            # If no user was passed, try to get the credentials elsewhere
             if user is None:
                 # If no credentials file was passed
                 if credentials_file is None:
-                    # Use the first existing credentials file between the one in the
-                    # user's home and the one in /etc
-                    if os.path.exists(MongoConnection.USER_CREDENTIALS):
-                        credentials_file = MongoConnection.USER_CREDENTIALS
-                    elif os.path.exists(MongoConnection.SERVER_CREDENTIALS):
-                        credentials_file = MongoConnection.SERVER_CREDENTIALS
-                    else:
-                        raise ConfigurationError("No configuration file found at either '%s' or '%s'." % (MongoConnection.USER_CREDENTIALS, MongoConnection.SERVER_CREDENTIALS))
+                    # Attempt to get the configuration from the environment
+                    authentication_database = os.environ.get('MONGO_AUTHENTICATION_DATABASE')
+                    user = os.environ.get('MONGO_USERNAME')
+                    password = os.environ.get('MONGO_PASSWORD')
 
-                try:
-                    # Try to open the credentials file
-                    with open(credentials_file) as credentials_file_obj:
-                        try:
+                    values_to_check = {authentication_database, user, password}
+
+                    # If there are undefined environment variables
+                    if None in values_to_check:
+                        # If they aren't all undefined, raise a ConfigurationError
+                        if len(values_to_check) > 1:
+                            raise ConfigurationError("Not all environment variables were set.")
+
+                        # Fall back to the first existing credentials file
+                        # between the one in the user's home and the one in /etc
+                        if os.path.exists(MongoConnection.USER_CREDENTIALS):
+                            credentials_file = MongoConnection.USER_CREDENTIALS
+                        elif os.path.exists(MongoConnection.SERVER_CREDENTIALS):
+                            credentials_file = MongoConnection.SERVER_CREDENTIALS
+                        else:
+                            raise ConfigurationError("No credential file found at either '%s' or '%s'." % (MongoConnection.USER_CREDENTIALS, MongoConnection.SERVER_CREDENTIALS))
+
+                # If there is a credentials file to check
+                if credentials_file is not None:
+                    try:
+                        # Try to open the credentials file
+                        with open(credentials_file) as credentials_file_obj:
                             # Read the file
                             lines = credentials_file_obj.readlines()
 
-                            # Get the authentication database, user and password from the contents
-                            authentication_database = lines[0].strip()
-                            user = lines[1].strip()
-                            password = lines[2].strip()
-                        except IndexError:
-                            raise ConfigurationError("Credentials file '%s' is wrongly formatted." % credentials_file)
-                except IOError:
-                    raise ConfigurationError("Could not open '%s'." % credentials_file)
-            elif password is None:
-                raise ConfigurationError("A password is required.")
+                            try:
+                                # Get the authentication database, user and password from the contents
+                                authentication_database = lines[0].strip()
+                                user = lines[1].strip()
+                                password = lines[2].strip()
+                            except IndexError:
+                                raise ConfigurationError("Credential file '%s' is wrongly formatted." % credentials_file)
+                    except IOError:
+                        raise ConfigurationError("Could not open '%s'." % credentials_file)
+            elif password is None or authentication_database is None:
+                raise ConfigurationError("You need to define a password and authentication database when setting a user.")
 
             # Store the user, password and authentication database in the instance
             self.user = user
