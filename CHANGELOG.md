@@ -1,6 +1,12 @@
 Changelog
 =========
 
+**1.0.0**
+
+* When no credentials are provided for an authenticated connection, the client now logs a warning instead of raising an exception
+* Switched to a specific logger instead of using the root logger
+* Removed unnecessary instance attributes
+
 **0.6.0**
 
 * Added the ability to fetch credentials from environment variables

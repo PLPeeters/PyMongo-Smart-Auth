@@ -7,6 +7,9 @@ from pymongo import MongoClient
 from pymongo.errors import ConfigurationError
 
 
+logger = logging.getLogger('pymongo_smart_auth')
+
+
 class MongoConnection(MongoClient):
     USER_CREDENTIALS = '%s/.mongo_credentials' % os.path.expanduser('~')
     SERVER_CREDENTIALS = '/etc/mongo_credentials'
@@ -18,11 +21,11 @@ class MongoConnection(MongoClient):
 
         # Issue a warning if the file is group readable
         if bool(cred_file_stats.st_mode & stat.S_IRGRP):
-            logging.warn("{0} is readable by the group. It should only be readable by the user. Fix by running:\nchmod 600 \"{0}\"".format(USER_CREDENTIALS))
+            logger.warn("{0} is readable by the group. It should only be readable by the user. Fix by running:\nchmod 600 \"{0}\"".format(USER_CREDENTIALS))
 
         # Issue a warning if the file is readable by others
         if bool(cred_file_stats.st_mode & stat.S_IROTH):
-            logging.warn("{0} is readable by others. It should only be readable by the user. Fix by running:\nchmod 600 \"{0}\"".format(USER_CREDENTIALS))
+            logger.warn("{0} is readable by others. It should only be readable by the user. Fix by running:\nchmod 600 \"{0}\"".format(USER_CREDENTIALS))
 
     def __init__(
             self,
@@ -41,8 +44,6 @@ class MongoConnection(MongoClient):
 
         super(MongoConnection, self).__init__(host, port, document_class, tz_aware, connect, **kwargs)
 
-        self.authenticate = authenticate
-
         # If authentication is on for this connection
         if authenticate:
             # If no user was passed, try to get the credentials elsewhere
@@ -50,9 +51,9 @@ class MongoConnection(MongoClient):
                 # If no credentials file was passed
                 if credentials_file is None:
                     # Attempt to get the configuration from the environment
-                    authentication_database = os.environ.get('MONGO_AUTHENTICATION_DATABASE')
-                    user = os.environ.get('MONGO_USERNAME')
-                    password = os.environ.get('MONGO_PASSWORD')
+                    authentication_database = os.environ.get('MONGO_AUTHENTICATION_DATABASE') or None
+                    user = os.environ.get('MONGO_USERNAME') or None
+                    password = os.environ.get('MONGO_PASSWORD') or None
 
                     values_to_check = {authentication_database, user, password}
 
@@ -69,7 +70,7 @@ class MongoConnection(MongoClient):
                         elif os.path.exists(MongoConnection.SERVER_CREDENTIALS):
                             credentials_file = MongoConnection.SERVER_CREDENTIALS
                         else:
-                            raise ConfigurationError("No credential file found at either '%s' or '%s'." % (MongoConnection.USER_CREDENTIALS, MongoConnection.SERVER_CREDENTIALS))
+                            logger.warn("MongoConnection is authenticated but no credential file was found at either '%s' or '%s' and environment variables were not defined." % (MongoConnection.USER_CREDENTIALS, MongoConnection.SERVER_CREDENTIALS))
 
                 # If there is a credentials file to check
                 if credentials_file is not None:
@@ -81,9 +82,9 @@ class MongoConnection(MongoClient):
 
                             try:
                                 # Get the authentication database, user and password from the contents
-                                authentication_database = lines[0].strip()
-                                user = lines[1].strip()
-                                password = lines[2].strip()
+                                authentication_database = lines[0].strip() or None
+                                user = lines[1].strip() or None
+                                password = lines[2].strip() or None
                             except IndexError:
                                 raise ConfigurationError("Credential file '%s' is wrongly formatted." % credentials_file)
                     except IOError:
@@ -91,10 +92,16 @@ class MongoConnection(MongoClient):
             elif password is None or authentication_database is None:
                 raise ConfigurationError("You need to define a password and authentication database when setting a user.")
 
-            # Store the user, password and authentication database in the instance
-            self.user = user
-            self.password = password
-            self.authentication_database = authentication_database
+            authentication_parameters = {authentication_database, user, password}
 
-            # Authenticate the user
+            # If any of the authentication parameters is None
+            if None in authentication_parameters:
+                # Raise a ConfigurationError if at least one of them was set
+                if len(authentication_parameters) > 1:
+                    raise ConfigurationError("Credentials are missing at least one parameter (authentication database, username or password).")
+
+                # Return to prevent authentication if None of them were set
+                return
+
+            # Authenticate the connection
             self[authentication_database].authenticate(user, password)
