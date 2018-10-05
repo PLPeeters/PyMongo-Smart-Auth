@@ -6,7 +6,7 @@ import sys
 from pymongo import MongoClient
 from pymongo.errors import ConfigurationError
 
-
+logging.basicConfig()
 logger = logging.getLogger('pymongo_smart_auth')
 
 
