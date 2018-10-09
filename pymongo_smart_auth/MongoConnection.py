@@ -13,6 +13,7 @@ logger = logging.getLogger('pymongo_smart_auth')
 class MongoConnection(MongoClient):
     USER_CREDENTIALS = '%s/.mongo_credentials' % os.path.expanduser('~')
     SERVER_CREDENTIALS = '/etc/mongo_credentials'
+    __missing_credentials_warning_shown = False
 
     # On Unix systems, check the permissions of the credentials file
     if sys.platform in ('linux', 'linux2', 'darwin') and os.path.exists(USER_CREDENTIALS):
@@ -69,8 +70,10 @@ class MongoConnection(MongoClient):
                             credentials_file = MongoConnection.USER_CREDENTIALS
                         elif os.path.exists(MongoConnection.SERVER_CREDENTIALS):
                             credentials_file = MongoConnection.SERVER_CREDENTIALS
-                        else:
+                        elif not self.__missing_credentials_warning_shown:
                             logger.warn("MongoConnection is authenticated but no credential file was found at either '%s' or '%s' and environment variables were not defined." % (MongoConnection.USER_CREDENTIALS, MongoConnection.SERVER_CREDENTIALS))
+
+                            self.__missing_credentials_warning_shown = True
 
                 # If there is a credentials file to check
                 if credentials_file is not None:

@@ -1,6 +1,10 @@
 Changelog
 =========
 
+**1.0.2**
+
+* Added a class variable to prevent showing the warning for authenticated connections without credentials more than once 
+
 **1.0.0**
 
 * When no credentials are provided for an authenticated connection, the client now logs a warning instead of raising an exception
