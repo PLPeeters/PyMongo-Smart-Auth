@@ -1,1 +1,1 @@
-from MongoConnection import MongoConnection
+from pymongo_smart_auth.MongoConnection import MongoConnection

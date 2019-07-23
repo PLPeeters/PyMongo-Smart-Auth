@@ -1,6 +1,10 @@
 Changelog
 =========
 
+**1.0.3**
+
+* Updated `__init__.py` to avoid crashing with Python 3
+
 **1.0.2**
 
 * Added a class variable to prevent showing the warning for authenticated connections without credentials more than once 
