@@ -1,13 +1,19 @@
 Changelog
 =========
 
+**1.1.0**
+
+* Added support for a `MONGO_AUTHENTICATED_URI` environment variable that should contain a fully authenticated MongoDB URI
+* Added support for single-line credential files, which are assumed to contain a fully authenticated URI
+* Tweaked credential file parser to ignore blank lines
+
 **1.0.3**
 
 * Updated `__init__.py` to avoid crashing with Python 3
 
 **1.0.2**
 
-* Added a class variable to prevent showing the warning for authenticated connections without credentials more than once 
+* Added a class variable to prevent showing the warning for authenticated connections without credentials more than once
 
 **1.0.0**
 
