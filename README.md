@@ -1,6 +1,6 @@
 # PyMongo-Smart-Auth
 
-[![PyPI version](https://badge.fury.io/py/pymongo_smart_auth.svg)](https://badge.fury.io/py/pymongo_smart_auth)
+[![PyPI version](https://badge.fury.io/py/pymongo-smart-auth.svg)](https://badge.fury.io/py/pymongo-smart-auth)
 
 ## About
 
@@ -18,7 +18,7 @@ It also allows the user to specify the path to another credentials file or pass 
 
 ## Installation
 
-    pip install pymongo_smart_auth
+    pip install pymongo-smart-auth
 
 ## Usage
 
