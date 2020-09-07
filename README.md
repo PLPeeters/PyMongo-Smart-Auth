@@ -8,10 +8,11 @@ This package extends [PyMongo](https://github.com/mongodb/mongo-python-driver)'s
 
 * automatically authenticating when creating the connection instead of having to manually call `authenticate` on the authentication database
 * if an authenticated client was created without passing any credentials, it authenticates by:
-    1. looking for a `MONGO_AUTHENTICATED_URI` environment variable
-    2. looking for credentials in the `MONGO_AUTHENTICATION_DATABASE`, `MONGO_USERNAME` and `MONGO_PASSWORD` environment variables
-    3. looking for a `.mongo_credentials` file in the user's home
-    4. looking for a `mongo_credentials` file in the `/etc` folder
+    1. looking for a `MONGO_CREDENTIAL_FILE` environment variable and associated kwargs in the constructor to format it, if applicable
+    2. looking for a `MONGO_AUTHENTICATED_URI` environment variable
+    3. looking for credentials in the `MONGO_AUTHENTICATION_DATABASE`, `MONGO_USERNAME` and `MONGO_PASSWORD` environment variables
+    4. looking for a `.mongo_credentials` file in the user's home
+    5. looking for a `mongo_credentials` file in the `/etc` folder
 
 It also allows the user to specify the path to another credentials file or pass credentials directly.
 
@@ -40,10 +41,11 @@ Upon initialisation with the default `authenticate=True`, the client looks for c
 
 1. The `user` and `password` parameters
 2. The passed `credentials_file`
-3. The `MONGO_AUTHENTICATED_URI` environment variable
-4. The `MONGO_AUTHENTICATION_DATABASE`, `MONGO_USERNAME` and `MONGO_PASSWORD` environment variables
-5. The `.mongo_credentials` file in the user's home
-6. The `mongo_credentials` file in the `/etc` folder
+3. The `MONGO_CREDENTIAL_FILE` environment variable formatted with the kwargs of the constructor, if applicable
+4. The `MONGO_AUTHENTICATED_URI` environment variable
+5. The `MONGO_AUTHENTICATION_DATABASE`, `MONGO_USERNAME` and `MONGO_PASSWORD` environment variables
+6. The `.mongo_credentials` file in the user's home
+7. The `mongo_credentials` file in the `/etc` folder
 
 Usage examples:
 
@@ -66,9 +68,14 @@ database3 = mongo3['database3'] # Automatically authenticated
 mongo4 = MongoConnection()
 database4 = mongo4['database4'] # Automatically authenticated
 
+# Will authenticate with a file defined in the environment with a keyword argument
+# Assuming MONGO_CREDENTIAL_FILE=/etc/credentials_{group}
+mongo5 = MongoConnection(group='my_group')
+database5 = mongo6['my_group_database'] # Automatically authenticated
+
 # Will not authenticate
-mongo5 = MongoConnection(authenticate=False)
-database5 = mongo5['database5'] # Not authenticated
+mongo6 = MongoConnection(authenticate=False)
+database6 = mongo5['database5'] # Not authenticated
 ```
 
 ## License

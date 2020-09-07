@@ -1,6 +1,10 @@
 Changelog
 =========
 
+**1.2.0**
+
+* Added support for `MONGO_CREDENTIAL_FILE` environment variable that should contain a string with a path to a credential file to use. The string may be a format string, in which case it will be formatted using the `kwargs` passed to the constructor.
+
 **1.1.0**
 
 * Added support for a `MONGO_AUTHENTICATED_URI` environment variable that should contain a fully authenticated MongoDB URI
