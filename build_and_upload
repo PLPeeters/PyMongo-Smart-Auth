@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-python setup.py sdist
-python setup.py sdist upload
-python setup.py bdist_wheel
-python setup.py bdist_wheel upload
+python3 setup.py sdist
+python3 setup.py bdist_wheel
+python3 -m twine upload --skip-existing dist/*
