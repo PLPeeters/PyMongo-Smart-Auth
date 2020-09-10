@@ -1,6 +1,10 @@
 Changelog
 =========
 
+**1.2.1**
+
+* Fixed client not properly initialising when authentication is disabled.
+
 **1.2.0**
 
 * Added support for `MONGO_CREDENTIAL_FILE` environment variable that should contain a string with a path to a credential file to use. The string may be a format string, in which case it will be formatted using the `kwargs` passed to the constructor.
