@@ -139,7 +139,7 @@ class AuthMongoClient(MongoClient):
                         elif os.path.exists(self.SERVER_CREDENTIALS):
                             credentials_file = self.SERVER_CREDENTIALS
                         elif not self.__missing_credentials_warning_shown:
-                            logger.warning("self is authenticated but no credential file was found at either '%s' or '%s' and environment variables were not defined." % (self.USER_CREDENTIALS, self.SERVER_CREDENTIALS))
+                            logger.warning("Mongo client is authenticated but no credential file was found at either '%s' or '%s' and environment variables were not defined." % (self.USER_CREDENTIALS, self.SERVER_CREDENTIALS))
 
                             self.__missing_credentials_warning_shown = True
 
