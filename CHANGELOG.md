@@ -1,6 +1,11 @@
 Changelog
 =========
 
+**1.3.0**
+
+* Added support for Python 3.10
+* Renamed the import to `MongoClient` to make the package truly drop-in, meaning you can just change your import to `from pymongo_smart_auth import MongoClient` when transitioning from PyMongo and _voilà_ (to avoid breaking compatibility with older code, `MongoConnection` can still be imported)
+
 **1.2.1**
 
 * Fixed client not properly initialising when authentication is disabled.

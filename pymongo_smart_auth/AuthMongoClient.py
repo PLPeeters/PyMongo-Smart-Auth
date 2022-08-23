@@ -13,11 +13,11 @@ logging.basicConfig()
 logger = logging.getLogger('pymongo_smart_auth')
 
 
-class MongoConnection(MongoClient):
+class AuthMongoClient(MongoClient):
     USER_CREDENTIALS = '%s/.mongo_credentials' % os.path.expanduser('~')
     SERVER_CREDENTIALS = '/etc/mongo_credentials'
     __missing_credentials_warning_shown = False
-    __PYMONGO_ARGS = set(inspect.getargspec(MongoClient).args)
+    __PYMONGO_ARGS = set(inspect.getfullargspec(MongoClient).args)
 
     # On Unix systems, check the permissions of the credential file
     if sys.platform in ('linux', 'linux2', 'darwin') and os.path.exists(USER_CREDENTIALS):
@@ -49,7 +49,7 @@ class MongoConnection(MongoClient):
 
         # If authentication is off for this connection, just initialise
         if not authenticate:
-            super(MongoConnection, self).__init__(host, port, document_class, tz_aware, connect, **kwargs)
+            super(AuthMongoClient, self).__init__(host, port, document_class, tz_aware, connect, **kwargs)
 
             return
 
@@ -74,21 +74,21 @@ class MongoConnection(MongoClient):
 
                         # Create a set with the known arguments from PyMongo and our library
                         # and check that the fields do not clash with those
-                        constructor_args = MongoConnection.__PYMONGO_ARGS.union(set(inspect.getargspec(MongoConnection).args))
+                        constructor_args = AuthMongoClient.__PYMONGO_ARGS.union(set(inspect.getargspec(AuthMongoClient).args))
                         name_clashes = field_references.intersection(constructor_args)
 
                         logger.debug('Constructor args = {}'.format(constructor_args))
 
                         # If there are name clashes, raise a ConfigurationError
                         if len(name_clashes) > 0:
-                            raise ConfigurationError('The following variables in your MONGO_CREDENTIAL_FILE environment variable clash with the variables of either the MongoConnection or MongoClient constructor: {}.'.format(', '.join(name_clashes)))
+                            raise ConfigurationError('The following variables in your MONGO_CREDENTIAL_FILE environment variable clash with the variables of either the AuthMongoClient or MongoClient constructor: {}.'.format(', '.join(name_clashes)))
 
                         # Check that the kwargs contain the necessary fields
                         missing_kwargs = field_references - set(kwargs)
 
                         # If fields are missing, raise a ConfigurationError
                         if len(missing_kwargs) > 0:
-                            raise ConfigurationError('The following variables were found in your MONGO_CREDENTIAL_FILE environment variable but were not in the kwargs for the MongoConnection constructor: {}.'.format(', '.join(missing_kwargs)))
+                            raise ConfigurationError('The following variables were found in your MONGO_CREDENTIAL_FILE environment variable but were not in the kwargs for the AuthMongoClient constructor: {}.'.format(', '.join(missing_kwargs)))
 
                         # Pop the format string arguments from the kwargs
                         format_string_arguments = {}
@@ -134,12 +134,12 @@ class MongoConnection(MongoClient):
 
                         # Fall back to the first existing credential file
                         # between the one in the user's home and the one in /etc
-                        if os.path.exists(MongoConnection.USER_CREDENTIALS):
-                            credentials_file = MongoConnection.USER_CREDENTIALS
-                        elif os.path.exists(MongoConnection.SERVER_CREDENTIALS):
-                            credentials_file = MongoConnection.SERVER_CREDENTIALS
+                        if os.path.exists(self.USER_CREDENTIALS):
+                            credentials_file = self.USER_CREDENTIALS
+                        elif os.path.exists(self.SERVER_CREDENTIALS):
+                            credentials_file = self.SERVER_CREDENTIALS
                         elif not self.__missing_credentials_warning_shown:
-                            logger.warning("MongoConnection is authenticated but no credential file was found at either '%s' or '%s' and environment variables were not defined." % (MongoConnection.USER_CREDENTIALS, MongoConnection.SERVER_CREDENTIALS))
+                            logger.warning("self is authenticated but no credential file was found at either '%s' or '%s' and environment variables were not defined." % (self.USER_CREDENTIALS, self.SERVER_CREDENTIALS))
 
                             self.__missing_credentials_warning_shown = True
 
@@ -204,7 +204,7 @@ class MongoConnection(MongoClient):
             host = authenticated_mongodb_uri
             port = None
 
-        super(MongoConnection, self).__init__(host, port, document_class, tz_aware, connect, **kwargs)
+        super(AuthMongoClient, self).__init__(host, port, document_class, tz_aware, connect, **kwargs)
 
         # Authenticate the connection manually if possible
         if can_manually_authenticate:
