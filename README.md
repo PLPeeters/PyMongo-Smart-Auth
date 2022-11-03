@@ -31,11 +31,18 @@ The constructor works in the same way as the `MongoClient` constructor with four
 * `credentials_file`: a file where credentials can be found
 * `authenticate`: a boolean indicating whether the client should authenticate (defaults to `True`)
 
-When using a credentials file, it should either have a single line with a fully authenticated URI or have the authentication database on the first line, the user on the second and the password on the third. Empty lines are ignored. Example:
+### Credentials file
 
-    admin
-    administrator
-    P4ssw0rd
+When using a credentials file, it should either have:
+
+* a single line with a fully authenticated URI
+* the authentication database on the first line, the user on the second and the password on the third. Empty lines are ignored. Example file:
+
+        admin
+        administrator
+        P4ssw0rd
+
+### Credential lookup order
 
 Upon initialisation with the default `authenticate=True`, the client looks for credentials in the following order:
 
@@ -47,7 +54,7 @@ Upon initialisation with the default `authenticate=True`, the client looks for c
 6. The `.mongo_credentials` file in the user's home
 7. The `mongo_credentials` file in the `/etc` folder
 
-Usage examples:
+### Usage examples
 
 ```python
 from pymongo_smart_auth import MongoClient
@@ -64,12 +71,17 @@ database2 = mongo2['database2'] # Automatically authenticated
 mongo3 = MongoClient(credentials_file='/some/path/mongo_credentials')
 database3 = mongo3['database3'] # Automatically authenticated
 
-# Will read the environment variables if they exist, otherwise ~/.mongo_credentials if it exists, otherwise /etc/mongo_credentials
+# Will read the file in the MONGO_CREDENTIAL_FILE environment variable if set,
+# then the file in MONGO_CREDENTIAL_FILE environment variable if set,
+# then the MONGO_AUTHENTICATION_DATABASE, MONGO_USERNAME and MONGO_PASSWORD environment variables if set,
+# then ~/.mongo_credentials if it exists,
+# otherwise /etc/mongo_credentials
 mongo4 = MongoClient()
 database4 = mongo4['database4'] # Automatically authenticated
 
 # Will authenticate with a file defined in the environment with a keyword argument
-# Assuming MONGO_CREDENTIAL_FILE=/etc/credentials_{group}
+# Assuming MONGO_CREDENTIAL_FILE=/etc/credentials_{group},
+# this will authenticate with the credentials in /etc/credentials_my_group
 mongo5 = MongoClient(group='my_group')
 database5 = mongo6['my_group_database'] # Automatically authenticated
 
