@@ -26,7 +26,7 @@ The `MongoClient` class from the `PyMongo-Smart-Auth` package is a drop-in repla
 
 The constructor works in the same way as the `MongoClient` constructor with four additional parameters, all optional:
 
-* `user`: the user to authenticate with
+* `username`: the username to authenticate with
 * `password`: the password to authenticate with
 * `credentials_file`: a file where credentials can be found
 * `authenticate`: a boolean indicating whether the client should authenticate (defaults to `True`)
@@ -46,7 +46,7 @@ When using a credentials file, it should either have:
 
 Upon initialisation with the default `authenticate=True`, the client looks for credentials in the following order:
 
-1. The `user` and `password` parameters
+1. The `username` and `password` parameters
 2. The passed `credentials_file`
 3. The `MONGO_CREDENTIAL_FILE` environment variable formatted with the kwargs of the constructor, if applicable
 4. The `MONGO_AUTHENTICATED_URI` environment variable
@@ -60,11 +60,11 @@ Upon initialisation with the default `authenticate=True`, the client looks for c
 from pymongo_smart_auth import MongoClient
 
 # Explicit user and password
-mongo1 = MongoClient(user='user', password='p4ssw0rd')
+mongo1 = MongoClient(username='user', password='p4ssw0rd')
 database1 = mongo1['database1'] # Automatically authenticated
 
 # Explicit user and password with separate authentication database
-mongo2 = MongoClient(user='user', password='p4ssw0rd', authentication_database='mongo_users')
+mongo2 = MongoClient(username='user', password='p4ssw0rd', authentication_database='mongo_users')
 database2 = mongo2['database2'] # Automatically authenticated
 
 # Will read /some/path/mongo_credentials

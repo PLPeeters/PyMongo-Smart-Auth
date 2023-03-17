@@ -1,0 +1,6 @@
+[tool.autopep8]
+ignore = 'E501'
+
+[tool.isort]
+line_length = 99999999
+atomic = true

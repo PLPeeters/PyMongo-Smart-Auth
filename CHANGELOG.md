@@ -1,6 +1,12 @@
 Changelog
 =========
 
+**2.0.0**
+
+* Added support for PyMongo >= 4.0
+* Renamed the `user` parameter to `username` to be consistent with the PyMongo 4.0 interface
+* Dropped support for Python < 3.6
+
 **1.3.0**
 
 * Added support for Python 3.10
