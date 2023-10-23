@@ -207,9 +207,14 @@ class AuthMongoClient(pymongo.MongoClient):
             port = None
 
         if PYMONGO_MAJOR_VERSION >= 4:
-            kwargs['authSource'] = authSource
-            kwargs['username'] = username
-            kwargs['password'] = password
+            if authSource is not None:
+                kwargs['authSource'] = authSource
+
+            if username is not None:
+                kwargs['username'] = username
+
+            if password is not None:
+                kwargs['password'] = password
 
         super().__init__(host, port, document_class, tz_aware, connect, **kwargs)
 
