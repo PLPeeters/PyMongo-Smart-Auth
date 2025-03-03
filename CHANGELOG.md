@@ -1,6 +1,14 @@
 Changelog
 =========
 
+**2.1.2**
+
+* Fixed authentication
+
+**2.1.1**
+
+* Fixed async client initialisation
+
 **2.1.0**
 
 * Added AsyncMongoClient for supported PyMongo versions (≥ 4.9)

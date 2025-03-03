@@ -2,5 +2,23 @@
 
 set -e
 
+if [[ "$(git rev-parse --abbrev-ref HEAD)" != "master" ]]; then
+    echo "Not on master branch"
+    exit 1
+elif [[ -n $(git status --porcelain) ]]; then
+    echo "Uncommitted changes"
+    exit 1
+fi
+
+cd "$(dirname $0)"
+
+VERSION=$(python3 -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')
+
+rm -rf dist/
+rm -rf build/
+
 python3 -m build
 python3 -m twine upload --skip-existing dist/*
+
+git tag "$VERSION"
+git push --tags
