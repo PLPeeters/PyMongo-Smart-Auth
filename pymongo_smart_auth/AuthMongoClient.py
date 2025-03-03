@@ -7,7 +7,7 @@ from string import Formatter
 
 import pymongo
 
-PYMONGO_MAJOR_VERSION = int(pymongo.__version__.split('.')[0])
+PYMONGO_VERSION_TUPLE = tuple(map(int, pymongo.__version__.split('.')[:2]))
 
 logging.basicConfig()
 logger = logging.getLogger('pymongo_smart_auth')
@@ -206,7 +206,7 @@ class AuthMongoClient(pymongo.MongoClient):
             host = authenticated_mongodb_uri
             port = None
 
-        if PYMONGO_MAJOR_VERSION >= 4:
+        if PYMONGO_VERSION_TUPLE >= (4, 0):
             if authSource is not None:
                 kwargs['authSource'] = authSource
 
@@ -216,10 +216,11 @@ class AuthMongoClient(pymongo.MongoClient):
             if password is not None:
                 kwargs['password'] = password
 
+            can_manually_authenticate = False
+
         super().__init__(host, port, document_class, tz_aware, connect, **kwargs)
 
         # Authenticate the connection manually if possible
-        if PYMONGO_MAJOR_VERSION < 4 and can_manually_authenticate:
+        if can_manually_authenticate:
             logger.info('Authenticating with extracted credentials.')
-
             self[authSource].authenticate(username, password)

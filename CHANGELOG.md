@@ -1,6 +1,10 @@
 Changelog
 =========
 
+**2.1.0**
+
+* Added AsyncMongoClient for supported PyMongo versions (≥ 4.9)
+
 **2.0.0**
 
 * Added support for PyMongo >= 4.0

@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='pymongo_smart_auth',
-      version='2.0.1',
+      version='2.1.0',
       description='This package extends PyMongo to provide built-in smart authentication.',
       url='https://github.com/PLPeeters/PyMongo-Smart-Auth',
       author='Pierre-Louis Peeters',
