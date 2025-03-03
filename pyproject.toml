@@ -1,3 +1,25 @@
+[project]
+name = "pymongo_smart_auth"
+version = "2.1.0"
+description = "This package extends PyMongo to provide built-in smart authentication."
+keywords = ["mongo", "pymongo", "authentication", "seamless"]
+readme = "README.md"
+authors = [
+    {name = "Pierre-Louis Peeters", email = "PLPeeters@users.noreply.github.com"},
+]
+requires-python = ">=3.6"
+dependencies = [
+    "pymongo<5,>3",
+]
+license = {text = "MIT"}
+
+[project.urls]
+Homepage = "https://github.com/PLPeeters/PyMongo-Smart-Auth"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
 [tool.autopep8]
 ignore = 'E501'
 
