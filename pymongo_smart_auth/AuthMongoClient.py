@@ -17,5 +17,5 @@ class AuthMongoClient(pymongo.MongoClient, SmartAuth):
         authenticate=True,
         **kwargs,
     ):
-        host, port = self.get_host_port_and_update_kwargs(host, port, credentials_file, authenticate, **kwargs)
+        host, port = self.get_host_port_and_update_kwargs(host, port, credentials_file, authenticate, kwargs)
         super().__init__(host, port, document_class, tz_aware, connect, **kwargs)

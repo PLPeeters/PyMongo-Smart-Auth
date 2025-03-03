@@ -39,11 +39,14 @@ class SmartAuth:
         port=None,
         credentials_file=None,
         authenticate=True,
-        **kwargs,
+        kwargs: dict = None,
     ) -> Tuple[Optional[str], Optional[int]]:
         # If authentication is off for this connection, just initialise
         if not authenticate:
             return
+
+        if not kwargs:
+            kwargs = {}
 
         username = kwargs.get('username')
         password = kwargs.get('password')
