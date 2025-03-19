@@ -21,4 +21,4 @@ python3 -m build
 python3 -m twine upload --skip-existing dist/*
 
 git tag "$VERSION"
-git push --tags
+git push --follow-tags

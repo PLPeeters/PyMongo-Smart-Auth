@@ -1,6 +1,6 @@
 [project]
 name = "pymongo_smart_auth"
-version = "2.1.2"
+version = "2.1.3"
 description = "This package extends PyMongo to provide built-in smart authentication."
 keywords = ["mongo", "pymongo", "authentication", "seamless"]
 readme = "README.md"

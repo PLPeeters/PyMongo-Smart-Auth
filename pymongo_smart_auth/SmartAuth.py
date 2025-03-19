@@ -33,14 +33,14 @@ class SmartAuth:
         if bool(cred_file_stats.st_mode & stat.S_IROTH):
             logger.warning("{0} is readable by others. It should only be readable by the user. Fix by running:\nchmod 600 \"{0}\"".format(USER_CREDENTIALS))
 
-    def get_host_port_and_update_kwargs(  # noqa: C901
+    def get_host_port_and_updated_kwargs(  # noqa: C901
         self,
         host=None,
         port=None,
         credentials_file=None,
         authenticate=True,
         kwargs: dict = None,
-    ) -> Tuple[Optional[str], Optional[int]]:
+    ) -> Tuple[Optional[str], Optional[int], dict]:
         # If authentication is off for this connection, just initialise
         if not authenticate:
             return
@@ -217,4 +217,4 @@ class SmartAuth:
             logger.info('Authenticating with extracted credentials.')
             self[authSource].authenticate(username, password)
 
-        return host, port
+        return host, port, kwargs
